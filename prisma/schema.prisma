@@ -17,6 +17,7 @@ datasource db {
 enum ROLE {
   ADMIN
   OFFICER
+  PENDING
 }
 
 model User {
@@ -25,7 +26,7 @@ model User {
   email         String
   emailVerified Boolean
   image         String?
-  role          ROLE      @default(OFFICER)
+  role          ROLE      @default(PENDING)
   createdAt     DateTime
   updatedAt     DateTime
   sessions      Session[]
