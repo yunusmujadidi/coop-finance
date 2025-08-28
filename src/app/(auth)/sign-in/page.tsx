@@ -13,8 +13,8 @@ import Link from "next/link";
 const SignInPage = () => {
   return (
     // container
-    <div className="min-h-screen bg-background">
-      <div className="p-2 m-2 h-screen w-full flex flex-col items-center justify-center space-y-4">
+    <div className="min-h-screen bg-secondary">
+      <div className="h-screen w-full flex flex-col items-center justify-center gap-10">
         {/* logo */}
         <div className="text-center text-3xl font-bold">
           Unit Simpan Pinjam <br />
@@ -34,7 +34,7 @@ const SignInPage = () => {
             <SignInForm />
           </CardContent>
           <CardFooter>
-            <div>
+            <div className="text-center flex items-center justify-center">
               Belum punya akun?
               <Link href="/sign-up">
                 <Button className="cursor-pointer" variant="link">

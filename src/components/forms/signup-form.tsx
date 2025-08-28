@@ -20,9 +20,11 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { Label } from "../ui/label";
 
 export const SignUpForm = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   const router = useRouter();
 
@@ -52,6 +54,7 @@ export const SignUpForm = () => {
         },
         onError: (ctx) => {
           setIsLoading(false);
+          setError(ctx.error.message);
           toast.error(ctx.error.message);
         },
       }
@@ -121,6 +124,7 @@ export const SignUpForm = () => {
             </FormItem>
           )}
         />
+        {error && <FormMessage>{error}</FormMessage>}
 
         <div className="space-y-3">
           <Button disabled={isLoading} className="w-full" type="submit">

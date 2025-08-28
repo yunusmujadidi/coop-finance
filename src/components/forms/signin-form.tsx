@@ -18,9 +18,11 @@ import { Input } from "@/components/ui/input";
 import { signIn } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 export const SignInForm = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -48,6 +50,7 @@ export const SignInForm = () => {
         },
         onError: (ctx) => {
           setIsLoading(false);
+          setError(ctx.error.message);
           toast.error(ctx.error.message);
         },
       }
@@ -87,9 +90,17 @@ export const SignInForm = () => {
             </FormItem>
           )}
         />
+        {error && <FormMessage>{error}</FormMessage>}
         <div className="space-y-3">
-          <Button className="w-full" type="submit">
-            Login
+          <Button className="w-full" type="submit" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Loader2 className="animate-spin size-4 mr-2" />
+                Loading
+              </>
+            ) : (
+              "Login"
+            )}
           </Button>
           <div className="relative">
             <div className="absolute inset-0 flex items-center">

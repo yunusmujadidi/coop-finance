@@ -13,8 +13,8 @@ import Link from "next/link";
 const SignUpPage = () => {
   return (
     // container
-    <div className="min-h-screen bg-background">
-      <div className="h-screen w-full flex flex-col items-center justify-center space-y-4">
+    <div className="min-h-screen bg-secondary">
+      <div className="h-screen w-full flex flex-col items-center justify-center gap-10">
         {/* logo */}
         <div className="text-center text-3xl font-bold">
           Unit Simpan Pinjam <br />
