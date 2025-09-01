@@ -95,18 +95,18 @@ model MemberType {
 }
 
 model Member {
-  id           String   @id @default(uuid())
-  memberNo     String   @unique
+  id           String    @id @default(uuid())
+  memberNo     String    @unique
   name         String
   address      String?
   gender       Gender
   nationalId   String?
   birthPlace   String?
-  birthDate    DateTime
+  birthDate    DateTime?
   phone        String?
-  registerDate DateTime @default(now())
+  registerDate DateTime  @default(now())
   job          String?
-  isActive     Boolean  @default(true)
+  isActive     Boolean   @default(true)
 
   memberTypeId String
   memberType   MemberType @relation(fields: [memberTypeId], references: [id])

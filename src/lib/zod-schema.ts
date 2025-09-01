@@ -28,11 +28,17 @@ export const memberSchema = z.object({
   }),
   nationalId: z.string().optional(),
   birthPlace: z.string().optional(),
-  birthDate: z.date({
-    message: "Tanggal lahir harus diisi!",
-  }),
+  birthDate: z
+    .date({
+      message: "Tanggal lahir harus diisi!",
+    })
+    .optional(),
   phone: z.string().optional(),
   job: z.string().optional(),
   memberTypeId: z.string().min(1, "Tipe anggota harus dipilih!"),
   isActive: z.boolean(),
+});
+
+export const memberTypeSchema = z.object({
+  name: z.string().min(1, "Nama harus diisi!"),
 });
