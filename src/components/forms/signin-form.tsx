@@ -1,9 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { z } from "zod";
+import { toast } from "sonner";
 import { useForm } from "react-hook-form";
-
+import { Loader2 } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
+
 import { loginSchema } from "@/lib/zod-schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,9 +19,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { signIn } from "@/lib/auth-client";
-import { toast } from "sonner";
-import { useState } from "react";
-import { Loader2 } from "lucide-react";
 
 export const SignInForm = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -41,7 +41,6 @@ export const SignInForm = () => {
       },
       {
         onRequest: (ctx) => {
-          toast.loading("Loading");
           setIsLoading(true);
         },
         onSuccess: (ctx) => {
