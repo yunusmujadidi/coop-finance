@@ -20,6 +20,37 @@ enum ROLE {
   PENDING
 }
 
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum SavingsType {
+  MANDATORY
+  VOLUNTARY
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  LOAN_DISBURSEMENT
+  LOAN_PAYMENT
+}
+
+enum LoanStatus {
+  PENDING
+  APPROVED
+  ACTIVE
+  COMPLETED
+  REJECTED
+}
+
+enum LoanType {
+  REGULAR
+  EMERGENCY
+  BUSINESS
+}
+
 model User {
   id            String    @id
   name          String
@@ -81,17 +112,14 @@ model Verification {
   @@map("verification")
 }
 
-enum Gender {
-  MALE
-  FEMALE
-}
-
 model MemberType {
   id        String   @id @default(uuid())
   name      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  member    Member[]
+  members   Member[]
+
+  @@map("member_type")
 }
 
 model Member {
@@ -110,4 +138,85 @@ model Member {
 
   memberTypeId String
   memberType   MemberType @relation(fields: [memberTypeId], references: [id])
+
+  // relations
+  savingsAccounts SavingsAccount[]
+  loans           Loan[]
+  transactions    Transaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("member")
+}
+
+model SavingsAccount {
+  id          String      @id @default(uuid())
+  accountNo   String      @unique
+  savingsType SavingsType
+  balance     Decimal     @default(0) @db.Decimal(15, 2)
+  isActive    Boolean     @default(true)
+
+  memberId String
+  member   Member @relation(fields: [memberId], references: [id])
+
+  transactions Transaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("savings_account")
+}
+
+model Loan {
+  id                 String     @id @default(uuid())
+  loanNo             String     @unique
+  loanType           LoanType
+  principalAmount    Decimal    @db.Decimal(15, 2)
+  interestRate       Decimal    @db.Decimal(5, 4)
+  loanTerm           Int
+  monthlyPayment     Decimal    @db.Decimal(15, 2)
+  outstandingBalance Decimal    @db.Decimal(15, 2)
+  status             LoanStatus @default(PENDING)
+  purpose            String?
+
+  applicationDate  DateTime  @default(now())
+  approvalDate     DateTime?
+  disbursementDate DateTime?
+
+  memberId String
+  member   Member @relation(fields: [memberId], references: [id])
+
+  transactions Transaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("loan")
+}
+
+model Transaction {
+  id              String          @id @default(uuid())
+  transactionNo   String          @unique
+  type            TransactionType
+  amount          Decimal         @db.Decimal(15, 2)
+  balanceBefore   Decimal?        @db.Decimal(15, 2)
+  balanceAfter    Decimal?        @db.Decimal(15, 2)
+  description     String?
+  transactionDate DateTime        @default(now())
+
+  memberId String
+  member   Member @relation(fields: [memberId], references: [id])
+
+  // savings / loan
+  savingsAccountId String?
+  savingsAccount   SavingsAccount? @relation(fields: [savingsAccountId], references: [id])
+
+  loanId String?
+  loan   Loan?   @relation(fields: [loanId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("transaction")
 }
