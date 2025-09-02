@@ -13,8 +13,8 @@ import { columns } from "@/app/(dashboard)/(routes)/pengaturan/columns";
 import { getMemberType } from "@/app/actions/member-actions";
 
 const SettingPage = async () => {
+  // fetch data
   const data = await getMemberType();
-  console.log(data);
   return (
     <div className="m-4">
       <Card>
@@ -29,9 +29,7 @@ const SettingPage = async () => {
           <CardDescription>
             <p>Kelola tipe anggota koperasi</p>
           </CardDescription>
-          <CardAction>
-            <SettingButton />
-          </CardAction>
+          <CardAction></CardAction>
         </CardHeader>
         <CardContent></CardContent>
         <CardFooter>

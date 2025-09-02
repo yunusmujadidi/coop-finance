@@ -5,6 +5,7 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
+  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
@@ -24,7 +25,9 @@ export const Navigation = () => {
           <>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href={route.url}>{route.title}</BreadcrumbLink>
+              <BreadcrumbPage>
+                <BreadcrumbLink href={route.url}>{route.title}</BreadcrumbLink>
+              </BreadcrumbPage>
             </BreadcrumbItem>
           </>
         )}
