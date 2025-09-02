@@ -1,5 +1,13 @@
-import { MemberSheet } from "@/components/sheets/member-sheet";
+import { getMemberType } from "@/app/actions/member-actions";
+import { SheetProviderClient } from "./sheet-provider-client";
 
-export const SheetProvider = () => {
-  return <MemberSheet />;
+export const SheetProvider = async () => {
+  const memberTypes = await getMemberType();
+  console.log(memberTypes);
+
+  return (
+    <SheetProviderClient
+      memberTypes={memberTypes.success ? memberTypes.result || [] : []}
+    />
+  );
 };

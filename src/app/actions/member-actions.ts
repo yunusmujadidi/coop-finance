@@ -1,13 +1,15 @@
 "use server";
 
+import { z } from "zod";
+import { revalidatePath } from "next/cache";
+
 import { prisma } from "@/lib/prisma";
 import { memberSchema, memberTypeSchema } from "@/lib/zod-schema";
-import { revalidatePath } from "next/cache";
-import { z } from "zod";
 
 const revalidateMember = () => {
   revalidatePath("/anggota");
   revalidatePath("/");
+  revalidatePath("/pengaturan");
 };
 
 export const createMember = async (data: z.infer<typeof memberSchema>) => {
@@ -38,12 +40,11 @@ export const createMemberType = async (
   }
 };
 
-export const getMemberType = () => {
+export const getMemberType = async () => {
   try {
-    const result = prisma.memberType.findMany({});
-    revalidateMember();
-    return { success: true, message: "Jenis anggota berhasil dibuat", result };
+    const result = await prisma.memberType.findMany();
+    return { success: true, message: "Jenis anggota berhasil dimuat", result };
   } catch (error) {
-    return { success: false, message: "Gagal membuat jenis anggota", error };
+    return { success: false, message: "Gagal mengambil jenis anggota", error };
   }
 };
