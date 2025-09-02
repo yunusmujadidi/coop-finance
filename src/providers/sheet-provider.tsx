@@ -3,7 +3,6 @@ import { SheetProviderClient } from "./sheet-provider-client";
 
 export const SheetProvider = async () => {
   const memberTypes = await getMemberType();
-  console.log(memberTypes);
 
   return (
     <SheetProviderClient
