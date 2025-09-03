@@ -7,7 +7,6 @@ import { useSession } from "@/lib/auth-client";
 import { navigation } from "@/lib/consts";
 import { Button } from "@/components/ui/button";
 import { useMemberSheet } from "@/hooks/use-sheet";
-import { SettingButton } from "@/components/buttons/settings-button";
 
 export const Title = () => {
   const pathname = usePathname();
@@ -24,7 +23,6 @@ export const Title = () => {
           {pathname === "/" && data && ` ${data?.user.name}`}
         </p>
       </div>
-      {pathname === "/pengaturan" && <SettingButton />}
       {pathname !== "/" && pathname !== "/pengaturan" && (
         <Button onClick={() => onOpen()}>
           <PlusCircle />

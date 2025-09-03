@@ -1,17 +1,11 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, Edit2, Trash2 } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 
 import { SavingType } from "@/generated/prisma";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { SavingTypeTableAction } from "@/components/table/saving-type-table-action";
@@ -110,7 +104,6 @@ export const SavingTypeColumns: ColumnDef<SavingType>[] = [
     header: () => <div className="font-semibold w-full text-left">Aksi</div>,
     cell: ({ row }) => {
       const savingType = row.original;
-
       return <SavingTypeTableAction savingType={savingType} />;
     },
   },
