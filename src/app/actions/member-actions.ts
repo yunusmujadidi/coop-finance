@@ -120,6 +120,29 @@ export const createMemberType = async (
   }
 };
 
+export const updateMemberType = async (
+  id: string,
+  data: z.infer<typeof memberTypeSchema>
+) => {
+  try {
+    const validatedData = memberTypeSchema.parse(data);
+    const result = await prisma.memberType.update({
+      where: {
+        id,
+      },
+      data: validatedData,
+    });
+    revalidateMember();
+    return {
+      success: true,
+      message: "Jenis anggota berhasil diupdate",
+      result,
+    };
+  } catch (error) {
+    return { success: false, message: "Gagal mengupdate jenis anggota", error };
+  }
+};
+
 export const getMemberType = async () => {
   try {
     const result = await prisma.memberType.findMany();
@@ -131,5 +154,23 @@ export const getMemberType = async () => {
       error,
       result: [],
     };
+  }
+};
+
+export const deleteMembersType = async (id: string) => {
+  try {
+    const result = await prisma.memberType.deleteMany({
+      where: {
+        id,
+      },
+    });
+    revalidateMember();
+    return {
+      success: true,
+      message: "Berhasil menghapus jenis anggota!",
+      result,
+    };
+  } catch (error) {
+    return { success: false, message: "Gagal menghapus jenis anggota", error };
   }
 };

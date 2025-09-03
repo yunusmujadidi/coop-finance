@@ -43,3 +43,7 @@ export const memberSchema = z.object({
 export const memberTypeSchema = z.object({
   name: z.string().min(1, "Nama harus diisi!"),
 });
+
+export const savingType = z.object({
+  name: z.string().min(1, "Nama tabungan harus diisi!"),
+});

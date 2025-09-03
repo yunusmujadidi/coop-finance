@@ -20,7 +20,7 @@ import { useMemberSheet } from "@/hooks/use-sheet";
 import { createMember, updateMember } from "@/app/actions/member-actions";
 import { memberSchema } from "@/lib/zod-schema";
 import { MemberType } from "@/generated/prisma";
-import { Separator } from "../ui/separator";
+import { Separator } from "@/components/ui/separator";
 
 export const MemberSheet = ({ memberTypes }: { memberTypes: MemberType[] }) => {
   const { isOpen, onClose, isEdit, member } = useMemberSheet();

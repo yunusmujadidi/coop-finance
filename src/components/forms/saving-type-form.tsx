@@ -4,7 +4,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { memberTypeSchema } from "@/lib/zod-schema";
+import { savingType } from "@/lib/zod-schema";
 import {
   Form,
   FormControl,
@@ -14,29 +14,30 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { MemberType } from "@/generated/prisma";
+import { SavingType } from "@/generated/prisma";
 
-export const MemberTypeForm = ({
+export const SavingTypeForm = ({
   onSubmit,
-  memberType,
+  savingType: savingTypeData,
 }: {
-  onSubmit: (data: z.infer<typeof memberTypeSchema>) => void;
-  memberType?: MemberType;
+  onSubmit: (data: z.infer<typeof savingType>) => void;
+  savingType?: SavingType;
 }) => {
-  const form = useForm<z.infer<typeof memberTypeSchema>>({
-    resolver: zodResolver(memberTypeSchema),
+  const form = useForm<z.infer<typeof savingType>>({
+    resolver: zodResolver(savingType),
     defaultValues: {
-      name: memberType?.name || "",
+      name: savingTypeData?.name || "",
     },
   });
 
   return (
     <Form {...form}>
       <form
-        id="member-type-form"
+        id="saving-type-form"
         onSubmit={form.handleSubmit(onSubmit)}
         className="m-4"
       >
+        {/* nama simpanan */}
         <div className="space-y-8">
           <FormField
             control={form.control}
@@ -44,10 +45,10 @@ export const MemberTypeForm = ({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Nama Jenis Anggota <span className="text-red-800">*</span>
+                  Nama Jenis Simpanan <span className="text-red-800">*</span>
                 </FormLabel>
                 <FormControl>
-                  <Input placeholder="Karyawan Kontrak" {...field} />
+                  <Input placeholder="Simpanan Wajib" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -1,8 +1,9 @@
 "use client";
 
-import { useTransition } from "react";
 import z from "zod";
+import { useTransition } from "react";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 import {
   Dialog,
@@ -13,30 +14,39 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { MemberTypeForm } from "@/components/forms/member-type-form";
-import { memberTypeSchema } from "@/lib/zod-schema";
-import { createMemberType, updateMemberType } from "@/app/actions/member-actions";
-import { useMemberTypeModal } from "@/hooks/use-modal";
-import { Loader2 } from "lucide-react";
+import { savingType } from "@/lib/zod-schema";
+import { useSavingTypeModal } from "@/hooks/use-modal";
+import {
+  createSavingType,
+  updateSavingType,
+} from "@/app/actions/saving-actions";
+import { SavingTypeForm } from "@/components/forms/saving-type-form";
 
-export const MemberTypeModal = () => {
+export const SavingTypeModal = () => {
   const [isPending, startTransition] = useTransition();
-  const { onClose, isOpen, isEdit, memberType } = useMemberTypeModal();
+  const {
+    onClose,
+    isOpen,
+    isEdit,
+    savingType: savingTypeData,
+  } = useSavingTypeModal();
 
-  const onSubmit = (data: z.infer<typeof memberTypeSchema>) => {
+  const onSubmit = (data: z.infer<typeof savingType>) => {
     startTransition(async () => {
       let result;
 
-      if (isEdit && memberType) {
-        result = await updateMemberType(memberType.id, data);
+      if (isEdit && savingTypeData) {
+        result = await updateSavingType(savingTypeData.id, data);
         if (result.success) {
-          toast.success(`Jenis anggota ${result.result?.name} berhasil diupdate`);
+          toast.success(
+            `Jenis simpanan ${result.result?.name} berhasil diupdate`
+          );
           onClose();
         } else {
           toast.error(result.message);
         }
       } else {
-        result = await createMemberType(data);
+        result = await createSavingType(data);
         if (result?.error) {
           toast.error(result.message);
         } else {
@@ -52,30 +62,30 @@ export const MemberTypeModal = () => {
       <DialogContent className="w-7xl">
         <DialogHeader>
           <DialogTitle>
-            {isEdit ? "Edit Jenis Anggota" : "Tambahkan jenis anggota baru"}
+            {isEdit ? "Edit Jenis Simpanan" : "Tambahkan Jenis Simpanan Baru"}
           </DialogTitle>
           <DialogDescription>
             {isEdit
-              ? "Ubah informasi jenis anggota yang sudah ada"
-              : "Isi form berikut untuk menambahkan jenis anggota baru"}
+              ? "Ubah informasi jenis simpanan yang sudah ada"
+              : "Isi form berikut untuk menambahkan jenis simpanan baru"}
           </DialogDescription>
         </DialogHeader>
-        <MemberTypeForm 
-          onSubmit={onSubmit} 
-          memberType={isEdit ? memberType : undefined}
+        <SavingTypeForm
+          onSubmit={onSubmit}
+          savingType={isEdit ? savingTypeData : undefined}
         />
         <DialogFooter>
           <Button disabled={isPending} variant="outline" onClick={onClose}>
             Batal
           </Button>
-          <Button disabled={isPending} form="member-type-form">
+          <Button disabled={isPending} form="saving-type-form">
             {isPending ? (
               <>
                 <Loader2 className="animate-spin" />
                 {isEdit ? "Sedang Mengupdate" : "Sedang Membuat"}
               </>
             ) : isEdit ? (
-              "Update Jenis Anggota"
+              "Update Jenis Simpanan"
             ) : (
               "Tambah"
             )}
