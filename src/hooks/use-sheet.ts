@@ -8,14 +8,14 @@ type MemberSheetProps = {
   onOpenEdit: (member: Member) => void;
   isOpen: boolean;
   isEdit: boolean;
-  member?: Member | null;
+  member?: Member;
 };
 
 export const useMemberSheet = create<MemberSheetProps>((set) => ({
   isEdit: false,
   isOpen: false,
-  member: null,
-  onOpen: () => set({ isOpen: true, isEdit: false, member: null }),
+  member: undefined,
+  onOpen: () => set({ isOpen: true, isEdit: false, member: undefined }),
   onOpenEdit: (member: Member) => set({ isOpen: true, isEdit: true, member }),
-  onClose: () => set({ isOpen: false, isEdit: false, member: null }),
+  onClose: () => set({ isOpen: false, isEdit: false, member: undefined }),
 }));

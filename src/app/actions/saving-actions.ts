@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
 import { savingType } from "@/lib/zod-schema";
+import { requireAuth } from "@/lib/auth-server";
 
 const revalidateSaving = () => {
   revalidatePath("/simpanan");
@@ -15,6 +16,7 @@ const revalidateSaving = () => {
 
 export const createSavingType = async (data: z.infer<typeof savingType>) => {
   try {
+    await requireAuth();
     const validatedData = savingType.parse(data);
     const result = await prisma.savingType.create({
       data: validatedData,
@@ -31,6 +33,7 @@ export const updateSavingType = async (
   data: z.infer<typeof savingType>
 ) => {
   try {
+    await requireAuth();
     const validatedData = savingType.parse(data);
     const result = await prisma.savingType.update({
       where: {
@@ -55,6 +58,7 @@ export const updateSavingType = async (
 
 export const getSavingType = async () => {
   try {
+    await requireAuth();
     const result = await prisma.savingType.findMany();
     return { success: true, message: "Jenis simpanan berhasil dimuat", result };
   } catch (error) {
@@ -69,6 +73,7 @@ export const getSavingType = async () => {
 
 export const deleteSavingTypes = async (id: string) => {
   try {
+    await requireAuth();
     const result = await prisma.savingType.deleteMany({
       where: {
         id,

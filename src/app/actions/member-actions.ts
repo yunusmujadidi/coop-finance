@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
 import { memberSchema, memberTypeSchema } from "@/lib/zod-schema";
+import { requireAuth } from "@/lib/auth-server";
 
 const revalidateMember = () => {
   revalidatePath("/anggota");
@@ -14,6 +15,7 @@ const revalidateMember = () => {
 
 export const createMember = async (data: z.infer<typeof memberSchema>) => {
   try {
+    await requireAuth();
     const validatedData = memberSchema.parse(data);
     const result = await prisma.member.create({
       data: validatedData,
@@ -30,6 +32,7 @@ export const updateMember = async (
   data: z.infer<typeof memberSchema>
 ) => {
   try {
+    await requireAuth();
     const validatedData = memberSchema.parse(data);
     const result = await prisma.member.update({
       where: {
@@ -74,6 +77,7 @@ export const memberActiveToggle = async ({
   isActive: boolean;
 }) => {
   try {
+    await requireAuth();
     await prisma.member.updateMany({
       where: { id },
       data: { isActive: !isActive },
@@ -91,6 +95,7 @@ export const memberActiveToggle = async ({
 
 export const deleteMembers = async (id: string) => {
   try {
+    await requireAuth();
     const result = await prisma.member.deleteMany({
       where: {
         id,
@@ -109,6 +114,7 @@ export const createMemberType = async (
   data: z.infer<typeof memberTypeSchema>
 ) => {
   try {
+    await requireAuth();
     const validatedData = memberTypeSchema.parse(data);
     const result = await prisma.memberType.create({
       data: validatedData,
@@ -125,6 +131,7 @@ export const updateMemberType = async (
   data: z.infer<typeof memberTypeSchema>
 ) => {
   try {
+    await requireAuth();
     const validatedData = memberTypeSchema.parse(data);
     const result = await prisma.memberType.update({
       where: {
@@ -159,6 +166,7 @@ export const getMemberType = async () => {
 
 export const deleteMembersType = async (id: string) => {
   try {
+    await requireAuth();
     const result = await prisma.memberType.deleteMany({
       where: {
         id,
