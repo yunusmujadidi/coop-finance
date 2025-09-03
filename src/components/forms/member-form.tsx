@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -32,29 +33,31 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
-import { MemberType } from "@/generated/prisma";
+import { Member, MemberType } from "@/generated/prisma";
 
 export const MemberForm = ({
   onSubmit,
   memberTypes = [],
+  member,
 }: {
   onSubmit: (data: z.infer<typeof memberSchema>) => void;
   memberTypes?: MemberType[];
+  member?: Member;
 }) => {
   const form = useForm<z.infer<typeof memberSchema>>({
     resolver: zodResolver(memberSchema),
     defaultValues: {
-      memberNo: "",
-      name: "",
-      address: "",
-      gender: undefined,
-      nationalId: "",
-      birthPlace: "",
-      birthDate: undefined,
-      phone: "",
-      job: "",
-      memberTypeId: undefined,
-      isActive: true,
+      memberNo: member?.memberNo || "",
+      name: member?.name || "",
+      address: member?.address || "",
+      gender: member?.gender || undefined,
+      nationalId: member?.nationalId || "",
+      birthPlace: member?.birthPlace || "",
+      birthDate: member?.birthDate || undefined,
+      phone: member?.phone || "",
+      job: member?.job || "",
+      memberTypeId: member?.memberTypeId || undefined,
+      isActive: member?.isActive ?? true,
     },
   });
 
@@ -96,6 +99,7 @@ export const MemberForm = ({
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="memberTypeId"
@@ -239,6 +243,22 @@ export const MemberForm = ({
                 <FormLabel>Pekerjaan</FormLabel>
                 <FormControl>
                   <Input placeholder="Guru" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="address"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Alamat</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Jl. Pucang Indah V no 11, Mranggen, Demak"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

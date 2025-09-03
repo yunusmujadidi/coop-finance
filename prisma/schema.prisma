@@ -25,16 +25,12 @@ enum Gender {
   FEMALE
 }
 
-enum SavingsType {
-  MANDATORY
-  VOLUNTARY
-}
-
 enum TransactionType {
   DEPOSIT
   WITHDRAWAL
   LOAN_DISBURSEMENT
   LOAN_PAYMENT
+  TRANSFER
 }
 
 enum LoanStatus {
@@ -42,13 +38,7 @@ enum LoanStatus {
   APPROVED
   ACTIVE
   COMPLETED
-  REJECTED
-}
-
-enum LoanType {
-  REGULAR
-  EMERGENCY
-  BUSINESS
+  DEFAULTED
 }
 
 model User {
@@ -122,6 +112,18 @@ model MemberType {
   @@map("member_type")
 }
 
+model SavingType {
+  id        String           @id @default(uuid())
+  name      String           @unique
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  savings   SavingsAccount[]
+
+  @@map("saving_type")
+}
+
+// member management
+
 model Member {
   id           String    @id @default(uuid())
   memberNo     String    @unique
@@ -150,15 +152,17 @@ model Member {
   @@map("member")
 }
 
+// savings management
 model SavingsAccount {
-  id          String      @id @default(uuid())
-  accountNo   String      @unique
-  savingsType SavingsType
-  balance     Decimal     @default(0) @db.Decimal(15, 2)
-  isActive    Boolean     @default(true)
+  id        String  @id @default(uuid())
+  accountNo String  @unique
+  balance   Decimal @default(0) @db.Decimal(15, 2)
+  isActive  Boolean @default(true)
 
-  memberId String
-  member   Member @relation(fields: [memberId], references: [id])
+  memberId     String
+  savingTypeId String
+  member       Member      @relation(fields: [memberId], references: [id])
+  SavingType   SavingType? @relation(fields: [savingTypeId], references: [id])
 
   transactions Transaction[]
 
@@ -168,21 +172,26 @@ model SavingsAccount {
   @@map("savings_account")
 }
 
+// loan management
+
 model Loan {
   id                 String     @id @default(uuid())
   loanNo             String     @unique
-  loanType           LoanType
   principalAmount    Decimal    @db.Decimal(15, 2)
   interestRate       Decimal    @db.Decimal(5, 4)
-  loanTerm           Int
+  // rate
+  loanTerm           Int //months
   monthlyPayment     Decimal    @db.Decimal(15, 2)
   outstandingBalance Decimal    @db.Decimal(15, 2)
+  totalPaid          Decimal    @default(0) @db.Decimal(15, 2)
   status             LoanStatus @default(PENDING)
   purpose            String?
 
   applicationDate  DateTime  @default(now())
   approvalDate     DateTime?
   disbursementDate DateTime?
+  lastPaymentDate  DateTime?
+  maturityDate     DateTime?
 
   memberId String
   member   Member @relation(fields: [memberId], references: [id])
@@ -195,6 +204,8 @@ model Loan {
   @@map("loan")
 }
 
+// transactions
+
 model Transaction {
   id              String          @id @default(uuid())
   transactionNo   String          @unique
@@ -205,9 +216,6 @@ model Transaction {
   description     String?
   transactionDate DateTime        @default(now())
 
-  memberId String
-  member   Member @relation(fields: [memberId], references: [id])
-
   // savings / loan
   savingsAccountId String?
   savingsAccount   SavingsAccount? @relation(fields: [savingsAccountId], references: [id])
@@ -217,6 +225,8 @@ model Transaction {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Member    Member?  @relation(fields: [memberId], references: [id])
+  memberId  String?
 
   @@map("transaction")
 }

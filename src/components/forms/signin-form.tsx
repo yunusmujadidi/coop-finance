@@ -40,10 +40,10 @@ export const SignInForm = () => {
         rememberMe: false,
       },
       {
-        onRequest: (ctx) => {
+        onRequest: () => {
           setIsLoading(true);
         },
-        onSuccess: (ctx) => {
+        onSuccess: () => {
           toast.success("Berhasil login");
           setIsLoading(false);
         },

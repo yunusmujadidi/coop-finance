@@ -26,6 +26,7 @@ export const memberSchema = z.object({
   gender: z.enum(["MALE", "FEMALE"], {
     message: "Jenis kelamin harus dipilih!",
   }),
+  alamat: z.string().optional(),
   nationalId: z.string().optional(),
   birthPlace: z.string().optional(),
   birthDate: z

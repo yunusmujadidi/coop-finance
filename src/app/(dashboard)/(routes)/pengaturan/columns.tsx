@@ -6,15 +6,15 @@ import { MemberType } from "@/generated/prisma";
 
 export const columns: ColumnDef<MemberType>[] = [
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "name",
+    header: "Nama",
   },
   {
-    accessorKey: "email",
-    header: "Email",
+    accessorKey: "createdAt",
+    header: "Tanggal dibuat",
   },
   {
-    accessorKey: "amount",
-    header: "Amount",
+    accessorKey: "updatedAt",
+    header: "Tanggal diubah",
   },
 ];

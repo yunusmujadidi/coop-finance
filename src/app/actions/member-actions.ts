@@ -25,6 +25,72 @@ export const createMember = async (data: z.infer<typeof memberSchema>) => {
   }
 };
 
+export const updateMember = async (
+  id: string,
+  data: z.infer<typeof memberSchema>
+) => {
+  try {
+    const validatedData = memberSchema.parse(data);
+    const result = await prisma.member.update({
+      where: {
+        id,
+      },
+      data: validatedData,
+    });
+    revalidateMember();
+    return { success: true, message: "Anggota berhasil diupdate", result };
+  } catch (error) {
+    return { success: false, message: "Gagal membuat anggota baru", error };
+  }
+};
+
+export const getMembersDashboard = async () => {
+  try {
+    const result = await prisma.member.findMany({
+      include: {
+        memberType: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+    return { success: true, message: "Data anggota berhasil dimuat", result };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Gagal mengambil jenis anggota",
+      error,
+      result: [],
+    };
+  }
+};
+
+export const memberActiveToggle = async ({
+  id,
+  isActive,
+}: {
+  id: string;
+  isActive: boolean;
+}) => {
+  try {
+    await prisma.member.updateMany({
+      where: { id },
+      data: { isActive: !isActive },
+    });
+    revalidateMember();
+    return { success: true, message: "Berhasil meng-update status member!" };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Gagal mengupdate status member",
+      error,
+    };
+  }
+};
+
+// member type
+
 export const createMemberType = async (
   data: z.infer<typeof memberTypeSchema>
 ) => {
@@ -45,6 +111,11 @@ export const getMemberType = async () => {
     const result = await prisma.memberType.findMany();
     return { success: true, message: "Jenis anggota berhasil dimuat", result };
   } catch (error) {
-    return { success: false, message: "Gagal mengambil jenis anggota", error };
+    return {
+      success: false,
+      message: "Gagal mengambil jenis anggota",
+      error,
+      result: [],
+    };
   }
 };
