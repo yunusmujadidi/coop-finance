@@ -59,6 +59,9 @@ export const columns: ColumnDef<MemberDashboard>[] = [
         </div>
       );
     },
+    cell: ({ row }) => (
+      <span className="font-bold">{row.original.memberNo}</span>
+    ),
   },
   {
     accessorKey: "name",
@@ -145,12 +148,17 @@ export const columns: ColumnDef<MemberDashboard>[] = [
             }
           }}
         />
-        <Badge variant={row.original.isActive ? "default" : "secondary"}>
+
+        <Badge
+          variant={row.original.isActive ? "default" : "secondary"}
+          className="w-[50px] justify-center"
+        >
           {row.original.isActive ? "Ya" : "Tidak"}
         </Badge>
       </div>
     ),
   },
+
   {
     id: "actions",
     header: () => <div className="font-semibold w-full text-left">Aksi</div>,

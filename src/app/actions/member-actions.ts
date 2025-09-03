@@ -79,13 +79,27 @@ export const memberActiveToggle = async ({
       data: { isActive: !isActive },
     });
     revalidateMember();
-    return { success: true, message: "Berhasil meng-update status member!" };
+    return { success: true, message: "Berhasil meng-update status anggota!" };
   } catch (error) {
     return {
       success: false,
-      message: "Gagal mengupdate status member",
+      message: "Gagal mengupdate status anggota",
       error,
     };
+  }
+};
+
+export const deleteMembers = async (id: string) => {
+  try {
+    const result = await prisma.member.deleteMany({
+      where: {
+        id,
+      },
+    });
+    revalidateMember();
+    return { success: true, message: "Berhasil menghapus anggota!", result };
+  } catch (error) {
+    return { success: false, message: "Gagal menghapus anggota", error };
   }
 };
 
