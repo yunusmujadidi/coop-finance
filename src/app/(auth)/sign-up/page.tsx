@@ -31,8 +31,10 @@ const SignUpPage = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {/* sign up form */}
             <SignUpForm />
           </CardContent>
+          {/* footer */}
           <CardFooter>
             <div>
               Sudah punya akun?

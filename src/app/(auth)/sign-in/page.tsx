@@ -36,8 +36,10 @@ const SignInPage = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {/* sign in form */}
             <SignInForm />
           </CardContent>
+          {/* footer */}
           <CardFooter>
             <div className="text-center flex items-center justify-center">
               Belum punya akun?

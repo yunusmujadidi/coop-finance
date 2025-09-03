@@ -12,6 +12,7 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // check session for page protection
   const session = await auth.api.getSession({
     headers: await headers(),
   });
