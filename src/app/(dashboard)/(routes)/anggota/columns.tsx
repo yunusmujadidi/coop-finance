@@ -1,15 +1,16 @@
 "use client";
 
+import { toast } from "sonner";
+import { ArrowUpDown } from "lucide-react";
+
 import { MemberTableAction } from "@/components/table/member-table-action";
 import { Badge } from "@/components/ui/badge";
 import { Prisma } from "@/generated/prisma";
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { memberActiveToggle } from "@/app/actions/member-actions";
-import { toast } from "sonner";
 
 export type MemberDashboard = Prisma.MemberGetPayload<{
   include: {
@@ -22,6 +23,7 @@ export type MemberDashboard = Prisma.MemberGetPayload<{
 }>;
 
 export const columns: ColumnDef<MemberDashboard>[] = [
+  // checkbox
   {
     id: "select",
     header: ({ table }) => (
@@ -44,6 +46,7 @@ export const columns: ColumnDef<MemberDashboard>[] = [
     enableSorting: false,
     enableHiding: false,
   },
+  // member number
   {
     accessorKey: "memberNo",
     header: ({ column }) => {
@@ -60,19 +63,22 @@ export const columns: ColumnDef<MemberDashboard>[] = [
       );
     },
     cell: ({ row }) => (
-      <span className="font-bold">{row.original.memberNo}</span>
+      <span className="font-semibold">{row.original.memberNo}</span>
     ),
   },
+  // member name
   {
     accessorKey: "name",
     header: () => <div className="font-semibold w-full text-left">Nama</div>,
   },
+  // member type
   {
     accessorKey: "memberType.name",
     header: () => (
       <div className="font-semibold w-full text-left">Jenis Anggota</div>
     ),
   },
+  // member address
   {
     accessorKey: "address",
     header: () => <div className="font-semibold w-full text-left">Alamat</div>,
@@ -87,6 +93,7 @@ export const columns: ColumnDef<MemberDashboard>[] = [
       );
     },
   },
+  // member gender
   {
     accessorKey: "gender",
     header: () => (
@@ -97,6 +104,7 @@ export const columns: ColumnDef<MemberDashboard>[] = [
       return gender === "MALE" ? "Laki-laki" : "Perempuan";
     },
   },
+  // member phone number
   {
     accessorKey: "phone",
     header: () => (
@@ -107,6 +115,7 @@ export const columns: ColumnDef<MemberDashboard>[] = [
       return phone ? phone : <span className="text-muted-foreground">-</span>;
     },
   },
+  // created at
   {
     accessorKey: "registerDate",
     header: ({ column }) => {
@@ -129,6 +138,7 @@ export const columns: ColumnDef<MemberDashboard>[] = [
       return new Date(date).toLocaleDateString("id-ID");
     },
   },
+  // member status
   {
     accessorKey: "isActive",
     header: () => <div className="font-semibold w-full text-left">Status</div>,
@@ -158,7 +168,7 @@ export const columns: ColumnDef<MemberDashboard>[] = [
       </div>
     ),
   },
-
+  // table action
   {
     id: "actions",
     header: () => <div className="font-semibold w-full text-left">Aksi</div>,
