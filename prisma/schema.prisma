@@ -178,7 +178,7 @@ model Loan {
   id                 String     @id @default(uuid())
   loanNo             String     @unique
   principalAmount    Int
-  interestRate       Decimal    @db.Decimal(5, 4)
+  interestRate       Decimal    @db.Decimal(7, 4)
   // rate
   loanTerm           Int //months
   monthlyPayment     Int

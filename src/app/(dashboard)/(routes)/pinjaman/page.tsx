@@ -1,5 +1,4 @@
 import { getLoans } from "@/app/actions/loan-action";
-import { getMembers } from "@/app/actions/member-actions";
 import { DataTable } from "@/components/table/data-table";
 import { Card, CardContent } from "@/components/ui/card";
 import { columns } from "./columns";

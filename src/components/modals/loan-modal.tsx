@@ -61,6 +61,7 @@ export const LoanModal = ({ member }: { member: Member[] }) => {
               : "Isi form berikut untuk menambahkan pinjaman baru"}
           </DialogDescription>
         </DialogHeader>
+        {/* form pinjaman */}
         <LoanForm
           loan={isEdit ? loan : undefined}
           members={member}
