@@ -47,3 +47,40 @@ export const memberTypeSchema = z.object({
 export const savingType = z.object({
   name: z.string().min(1, "Nama tabungan harus diisi!"),
 });
+
+export const savingsAccountSchema = z.object({
+  accountNo: z.string().min(1, "Nomor rekening harus diisi!"),
+  balance: z.number().int().min(0, "Saldo tidak boleh kosong!"),
+  memberId: z.string().min(1, "Format ID anggota tidak valid!"),
+  savingTypeId: z.string().min(1, "Format ID jenis tabungan tidak valid!"),
+  isActive: z.boolean(),
+});
+
+export const loanSchema = z.object({
+  loanNo: z.string().min(1, "Nomor pinjaman harus diisi!"),
+  principalAmount: z.number().int().min(1, "Jumlah pinjaman harus diisi!"),
+  interestRate: z.number().min(0).max(100, "Suku bunga tidak valid!"),
+  loanTerm: z.number().int().min(1, "Jangka waktu harus diisi!"),
+  monthlyPayment: z.number().int().min(1, "Angsuran bulanan harus diisi!"),
+  outstandingBalance: z.number().int().min(0, "Sisa pinjaman tidak valid!"),
+  totalPaid: z.number().int().min(0, "Total pembayaran tidak valid!"),
+  purpose: z.string().optional(),
+  memberId: z.string().min(1, "Format ID anggota tidak valid!"),
+});
+
+export const transactionSchema = z.object({
+  transactionNo: z.string().min(1, "Nomor transaksi harus diisi!"),
+  type: z.enum(
+    ["DEPOSIT", "WITHDRAWAL", "LOAN_DISBURSEMENT", "LOAN_PAYMENT", "TRANSFER"],
+    {
+      message: "Jenis transaksi harus dipilih!",
+    }
+  ),
+  amount: z.number().int().min(1, "Jumlah transaksi harus diisi!"),
+  balanceBefore: z.number().int().optional(),
+  balanceAfter: z.number().int().optional(),
+  description: z.string().optional(),
+  memberId: z.string().min(1, "Format ID anggota tidak valid!"),
+  savingsAccountId: z.string().optional(),
+  loanId: z.string().optional(),
+});

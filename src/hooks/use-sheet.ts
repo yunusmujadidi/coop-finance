@@ -11,13 +11,13 @@ type MemberSheetProps = {
   member?: Member;
 };
 
-type SavingsSheetState = {
+type SavingSheetState = {
   onOpen: () => void;
   onClose: () => void;
-  onOpenEdit: (savingsAccount: SavingsAccount) => void;
+  onOpenEdit: (saving: SavingsAccount) => void;
   isOpen: boolean;
   isEdit: boolean;
-  savingsAccount?: SavingsAccount;
+  saving?: SavingsAccount;
 };
 
 export const useMemberSheet = create<MemberSheetProps>((set) => ({
@@ -29,13 +29,12 @@ export const useMemberSheet = create<MemberSheetProps>((set) => ({
   onClose: () => set({ isOpen: false, isEdit: false, member: undefined }),
 }));
 
-export const useSavingsSheet = create<SavingsSheetState>((set) => ({
+export const useSavingSheet = create<SavingSheetState>((set) => ({
   isEdit: false,
   isOpen: false,
-  member: undefined,
-  onOpen: () => set({ isOpen: true, isEdit: false, savingsAccount: undefined }),
-  onOpenEdit: (savingsAccount: SavingsAccount) =>
-    set({ isOpen: true, isEdit: true, savingsAccount }),
-  onClose: () =>
-    set({ isOpen: false, isEdit: false, savingsAccount: undefined }),
+  saving: undefined,
+  onOpen: () => set({ isOpen: true, isEdit: false, saving: undefined }),
+  onOpenEdit: (saving: SavingsAccount) =>
+    set({ isOpen: true, isEdit: true, saving }),
+  onClose: () => set({ isOpen: false, isEdit: false, saving: undefined }),
 }));

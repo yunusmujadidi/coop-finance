@@ -156,7 +156,7 @@ model Member {
 model SavingsAccount {
   id        String  @id @default(uuid())
   accountNo String  @unique
-  balance   Decimal @default(0) @db.Decimal(15, 2)
+  balance   Int     @default(0)
   isActive  Boolean @default(true)
 
   memberId     String
@@ -177,13 +177,13 @@ model SavingsAccount {
 model Loan {
   id                 String     @id @default(uuid())
   loanNo             String     @unique
-  principalAmount    Decimal    @db.Decimal(15, 2)
+  principalAmount    Int
   interestRate       Decimal    @db.Decimal(5, 4)
   // rate
   loanTerm           Int //months
-  monthlyPayment     Decimal    @db.Decimal(15, 2)
-  outstandingBalance Decimal    @db.Decimal(15, 2)
-  totalPaid          Decimal    @default(0) @db.Decimal(15, 2)
+  monthlyPayment     Int
+  outstandingBalance Int
+  totalPaid          Int        @default(0)
   status             LoanStatus @default(PENDING)
   purpose            String?
 
@@ -210,9 +210,9 @@ model Transaction {
   id              String          @id @default(uuid())
   transactionNo   String          @unique
   type            TransactionType
-  amount          Decimal         @db.Decimal(15, 2)
-  balanceBefore   Decimal?        @db.Decimal(15, 2)
-  balanceAfter    Decimal?        @db.Decimal(15, 2)
+  amount          Int
+  balanceBefore   Int?
+  balanceAfter    Int?
   description     String?
   transactionDate DateTime        @default(now())
 

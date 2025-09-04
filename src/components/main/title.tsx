@@ -6,12 +6,13 @@ import { PlusCircle } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
 import { navigation } from "@/lib/consts";
 import { Button } from "@/components/ui/button";
-import { useMemberSheet } from "@/hooks/use-sheet";
+import { useMemberSheet, useSavingSheet } from "@/hooks/use-sheet";
 
 export const Title = () => {
   const pathname = usePathname();
   const { data } = useSession();
   const { onOpen } = useMemberSheet();
+  const { onOpen: onOpenSavings } = useSavingSheet();
   const current = navigation.find((item) => item.url === pathname);
 
   return (
@@ -24,7 +25,11 @@ export const Title = () => {
         </p>
       </div>
       {pathname !== "/" && pathname !== "/pengaturan" && (
-        <Button onClick={() => onOpen()}>
+        <Button
+          onClick={() =>
+            pathname === "/simpanan" ? onOpenSavings() : onOpen()
+          }
+        >
           <PlusCircle />
           {`Buat ${current?.title} Baru`}
         </Button>

@@ -58,11 +58,24 @@ export const getMembersDashboard = async () => {
         },
       },
     });
-    return { success: true, message: "Data anggota berhasil dimuat", result };
+    return { success: true, message: "Data anggota berhasil dimuat", result: JSON.parse(JSON.stringify(result)) };
   } catch (error) {
     return {
       success: false,
-      message: "Gagal mengambil jenis anggota",
+      message: "Gagal mengambil anggota",
+      error,
+      result: [],
+    };
+  }
+};
+export const getMembers = async () => {
+  try {
+    const result = await prisma.member.findMany();
+    return { success: true, message: "Data anggota berhasil dimuat", result: JSON.parse(JSON.stringify(result)) };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Gagal mengambil anggota",
       error,
       result: [],
     };
@@ -152,8 +165,14 @@ export const updateMemberType = async (
 
 export const getMemberType = async () => {
   try {
-    const result = await prisma.memberType.findMany();
-    return { success: true, message: "Jenis anggota berhasil dimuat", result };
+    const result = await prisma.memberType.findMany({
+      include: {
+        _count: {
+          select: { members: true },
+        },
+      },
+    });
+    return { success: true, message: "Jenis anggota berhasil dimuat", result: JSON.parse(JSON.stringify(result)) };
   } catch (error) {
     return {
       success: false,

@@ -17,13 +17,14 @@ export const createSaving = async (
   data: z.infer<typeof savingsAccountSchema>
 ) => {
   try {
-    await requireAuth();
+    requireAuth();
     const validatedData = savingsAccountSchema.parse(data);
-    const result = await prisma.savingsAccount.create({
+    await prisma.savingsAccount.create({
       data: validatedData,
     });
     revalidateSaving();
-    return { success: true, message: "Simpanan baru berhasil dibuat", result };
+
+    return { success: true, message: "Simpanan baru berhasil dibuat" };
   } catch (error) {
     return { success: false, message: "Gagal membuat simpanan baru", error };
   }
@@ -36,7 +37,7 @@ export const updateSaving = async (
   try {
     await requireAuth();
     const validatedData = savingsAccountSchema.parse(data);
-    const result = await prisma.savingsAccount.update({
+    await prisma.savingsAccount.update({
       where: {
         id,
       },
@@ -46,7 +47,6 @@ export const updateSaving = async (
     return {
       success: true,
       message: "Simpanan berhasil diupdate",
-      result,
     };
   } catch (error) {
     return {
@@ -63,8 +63,12 @@ export const getSavings = async () => {
     const result = await prisma.savingsAccount.findMany({
       include: {
         member: {
-          select: {
-            name: true,
+          include: {
+            memberType: {
+              select: {
+                name: true,
+              },
+            },
           },
         },
         SavingType: {
@@ -77,7 +81,15 @@ export const getSavings = async () => {
         createdAt: "desc",
       },
     });
-    return { success: true, message: "Data simpanan berhasil dimuat", result };
+    const serializedResult = result.map((saving) => ({
+      ...saving,
+      balance: saving.balance,
+    }));
+    return {
+      success: true,
+      message: "Data simpanan berhasil dimuat",
+      result: JSON.parse(JSON.stringify(serializedResult)),
+    };
   } catch (error) {
     return {
       success: false,
@@ -154,8 +166,18 @@ export const updateSavingType = async (
 export const getSavingType = async () => {
   try {
     await requireAuth();
-    const result = await prisma.savingType.findMany();
-    return { success: true, message: "Jenis simpanan berhasil dimuat", result };
+    const result = await prisma.savingType.findMany({
+      include: {
+        _count: {
+          select: { savings: true },
+        },
+      },
+    });
+    return {
+      success: true,
+      message: "Jenis simpanan berhasil dimuat",
+      result: JSON.parse(JSON.stringify(result)),
+    };
   } catch (error) {
     return {
       success: false,
