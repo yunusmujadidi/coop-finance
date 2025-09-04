@@ -7,14 +7,15 @@ import { useSession } from "@/lib/auth-client";
 import { navigation } from "@/lib/consts";
 import { Button } from "@/components/ui/button";
 import { useMemberSheet, useSavingSheet } from "@/hooks/use-sheet";
-import { useLoanModal } from "@/hooks/use-modal";
+import { useLoanModal, useTransactionModal } from "@/hooks/use-modal";
 
 export const Title = () => {
-  const pathname = usePathname();
-  const { data } = useSession();
-  const { onOpen } = useMemberSheet();
+  const { onOpen: onOpenMember } = useMemberSheet();
   const { onOpen: onOpenSavings } = useSavingSheet();
   const { onOpen: onOpenLoan } = useLoanModal();
+  const { onOpen: onOpenTransaction } = useTransactionModal();
+  const pathname = usePathname();
+  const { data } = useSession();
   const current = navigation.find((item) => item.url === pathname);
 
   return (
@@ -33,7 +34,9 @@ export const Title = () => {
               ? onOpenSavings()
               : pathname === "/pinjaman"
               ? onOpenLoan()
-              : onOpen()
+              : pathname === "/transaksi"
+              ? onOpenTransaction()
+              : onOpenMember()
           }
         >
           <PlusCircle />

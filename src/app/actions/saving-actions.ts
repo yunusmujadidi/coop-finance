@@ -57,7 +57,7 @@ export const updateSaving = async (
   }
 };
 
-export const getSavings = async () => {
+export const getSavingsForDashboard = async () => {
   try {
     await requireAuth();
     const result = await prisma.savingsAccount.findMany({
@@ -90,6 +90,21 @@ export const getSavings = async () => {
       message: "Data simpanan berhasil dimuat",
       result: JSON.parse(JSON.stringify(serializedResult)),
     };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Gagal mengambil data simpanan",
+      error,
+      result: [],
+    };
+  }
+};
+
+export const getSavings = async () => {
+  try {
+    await requireAuth();
+    const result = await prisma.savingsAccount.findMany();
+    return { success: true, message: "Data simpanan berhasil dimuat", result: JSON.parse(JSON.stringify(result)) };
   } catch (error) {
     return {
       success: false,

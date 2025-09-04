@@ -1,10 +1,10 @@
-import { getSavingsForDashboard } from "@/app/actions/saving-actions";
+import { getTransactions } from "@/app/actions/transaction-actions";
 import { DataTable } from "@/components/table/data-table";
 import { Card, CardContent } from "@/components/ui/card";
-import { columns } from "./columns";
+import { columns } from "@/app/(dashboard)/(routes)/transaksi/columns";
 
-const SimpananPage = async () => {
-  const data = await getSavingsForDashboard();
+const TransaksiPage = async () => {
+  const data = await getTransactions();
   return (
     <div className="m-4">
       <Card>
@@ -12,8 +12,8 @@ const SimpananPage = async () => {
           <DataTable
             data={data.result}
             columns={columns}
-            filterKey="member.name"
-            filterName="Nama Anggota"
+            filterKey="transactionNo"
+            filterName="No. Transaksi"
           />
         </CardContent>
       </Card>
@@ -21,4 +21,4 @@ const SimpananPage = async () => {
   );
 };
 
-export default SimpananPage;
+export default TransaksiPage;

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import { Loan, MemberType, SavingType } from "@/generated/prisma";
+import { Loan, MemberType, SavingType, Transaction } from "@/generated/prisma";
 
 type MemberTypeModalProps = {
   onOpen: () => void;
@@ -56,4 +56,23 @@ export const useLoanModal = create<LoanModalState>((set) => ({
   onOpen: () => set({ isOpen: true, isEdit: false, loan: undefined }),
   onOpenEdit: (loan: Loan) => set({ isOpen: true, isEdit: true, loan }),
   onClose: () => set({ isOpen: false, isEdit: false, loan: undefined }),
+}));
+
+type TransactionModalState = {
+  onOpen: () => void;
+  onClose: () => void;
+  onOpenEdit: (transaction: Transaction) => void;
+  isOpen: boolean;
+  isEdit: boolean;
+  transaction?: Transaction;
+};
+
+export const useTransactionModal = create<TransactionModalState>((set) => ({
+  isEdit: false,
+  isOpen: false,
+  transaction: undefined,
+  onOpen: () => set({ isOpen: true, isEdit: false, transaction: undefined }),
+  onOpenEdit: (transaction: Transaction) =>
+    set({ isOpen: true, isEdit: true, transaction }),
+  onClose: () => set({ isOpen: false, isEdit: false, transaction: undefined }),
 }));

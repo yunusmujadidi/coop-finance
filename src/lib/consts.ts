@@ -1,4 +1,5 @@
 import {
+  BanknoteArrowUp,
   BookUser,
   CreditCard,
   LayoutDashboard,
@@ -24,6 +25,12 @@ export const navigation = [
     url: "/pinjaman",
     icon: CreditCard,
     description: "Kelola pinjaman anggota koperasi",
+  },
+  {
+    title: "Transaksi",
+    url: "/transaksi",
+    icon: BanknoteArrowUp,
+    description: "Kelola transaksi anggota koperasi",
   },
   {
     title: "Anggota",

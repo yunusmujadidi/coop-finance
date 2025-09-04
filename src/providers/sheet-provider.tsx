@@ -10,13 +10,8 @@ export const SheetProvider = async () => {
 
   return (
     <>
-      <MemberSheet
-        memberTypes={memberTypes.success ? memberTypes.result || [] : []}
-      />
-      <SavingSheet
-        savingTypes={savingTypes.success ? savingTypes.result || [] : []}
-        members={members.success ? members.result || [] : []}
-      />
+      <MemberSheet memberTypes={memberTypes.result} />
+      <SavingSheet savingTypes={savingTypes.result} members={members.result} />
     </>
   );
 };

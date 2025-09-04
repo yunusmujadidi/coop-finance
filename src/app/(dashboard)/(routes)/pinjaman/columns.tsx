@@ -85,6 +85,9 @@ export const columns: ColumnDef<LoanDashboard>[] = [
     },
     cell: ({ row }) => {
       const member = row.original.member;
+      if (!member) {
+        return <span>-</span>;
+      }
       return (
         <div>
           <div className="font-medium">{member.name}</div>

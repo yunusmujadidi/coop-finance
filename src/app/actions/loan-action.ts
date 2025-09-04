@@ -68,7 +68,7 @@ export const updateLoan = async (
   }
 };
 
-export const getLoans = async () => {
+export const getLoansForDashboard = async () => {
   try {
     await requireAuth();
 
@@ -105,6 +105,21 @@ export const getLoans = async () => {
       message: "Data pinjaman berhasil dimuat",
       result: JSON.parse(JSON.stringify(serializedResult)),
     };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Gagal mengambil data pinjaman",
+      error,
+      result: [],
+    };
+  }
+};
+
+export const getLoans = async () => {
+  try {
+    await requireAuth();
+    const result = await prisma.loan.findMany();
+    return { success: true, message: "Data pinjaman berhasil dimuat", result: JSON.parse(JSON.stringify(result)) };
   } catch (error) {
     return {
       success: false,
