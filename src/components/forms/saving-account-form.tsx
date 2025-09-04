@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 
 import {
   Form,
@@ -23,6 +24,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { savingsAccountSchema } from "@/lib/zod-schema";
 import { Member, SavingsAccount, SavingType } from "@/generated/prisma";
+import { formatRupiah, parseRupiah } from "@/lib/utils";
 
 export const SavingsAccountForm = ({
   onSubmit,
@@ -45,6 +47,11 @@ export const SavingsAccountForm = ({
       isActive: saving?.isActive ?? true,
     },
   });
+
+  // state untuk format tampilan currency
+  const [displayBalance, setDisplayBalance] = useState(
+    saving?.balance ? formatRupiah(saving.balance) : ""
+  );
 
   return (
     <Form {...form}>
@@ -146,13 +153,15 @@ export const SavingsAccountForm = ({
                 </FormLabel>
                 <FormControl>
                   <Input
-                    type="number"
-                    min="0"
-                    placeholder="0"
-                    {...field}
-                    onChange={(e) =>
-                      field.onChange(parseInt(e.target.value) || 0)
-                    }
+                    type="text"
+                    placeholder="Rp 0"
+                    value={displayBalance}
+                    onChange={(e) => {
+                      const rawValue = e.target.value;
+                      const numericValue = parseRupiah(rawValue);
+                      field.onChange(numericValue);
+                      setDisplayBalance(formatRupiah(numericValue));
+                    }}
                   />
                 </FormControl>
                 <FormMessage />

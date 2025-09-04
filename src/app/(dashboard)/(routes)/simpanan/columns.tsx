@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { SavingTableAction } from "@/components/table/saving-table-action";
 import { Prisma } from "@/generated/prisma";
 import { Switch } from "@/components/ui/switch";
+import { formatRupiah } from "@/lib/utils";
 
 export type SavingDashboard = Prisma.SavingsAccountGetPayload<{
   include: {
@@ -164,11 +165,8 @@ export const columns: ColumnDef<SavingDashboard>[] = [
       );
     },
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("balance"));
-      const formatted = new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-      }).format(amount);
+      const amount = row.getValue("balance") as number;
+      const formatted = formatRupiah(amount);
 
       return <div className="text-left font-medium">{formatted}</div>;
     },
