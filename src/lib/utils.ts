@@ -23,3 +23,21 @@ export function formatRupiah(amount: number | string): string {
 export function parseRupiah(value: string): number {
   return parseInt(value.replace(/\D/g, "")) || 0;
 }
+
+// get status badge color
+export const getStatusColor = (status: string) => {
+  switch (status) {
+    case "PENDING":
+      return { label: "Menunggu", variant: "secondary" as const };
+    case "APPROVED":
+      return { label: "Disetujui", variant: "default" as const };
+    case "ACTIVE":
+      return { label: "Aktif", variant: "default" as const };
+    case "COMPLETED":
+      return { label: "Lunas", variant: "default" as const };
+    case "DEFAULTED":
+      return { label: "Bermasalah", variant: "destructive" as const };
+    default:
+      return { label: status, variant: "secondary" as const };
+  }
+};

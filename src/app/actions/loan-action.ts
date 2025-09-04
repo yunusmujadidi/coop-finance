@@ -31,7 +31,7 @@ export const createLoan = async (data: z.infer<typeof loanSchema>) => {
     return {
       success: true,
       message: "Pinjaman baru berhasil dibuat",
-      result: serializedResult,
+      result: JSON.parse(JSON.stringify(serializedResult)),
     };
   } catch (error) {
     return { success: false, message: "Gagal membuat pinjaman baru", error };
@@ -61,7 +61,7 @@ export const updateLoan = async (
     return {
       success: true,
       message: "Pinjaman berhasil diupdate",
-      result: serializedResult,
+      result: JSON.parse(JSON.stringify(serializedResult)),
     };
   } catch (error) {
     return { success: false, message: "Gagal mengupdate pinjaman", error };
@@ -146,7 +146,7 @@ export const deleteLoan = async (id: string) => {
     return {
       success: true,
       message: "Berhasil menghapus pinjaman!",
-      result,
+      result: JSON.parse(JSON.stringify(result)),
     };
   } catch (error) {
     return { success: false, message: "Gagal menghapus pinjaman", error };

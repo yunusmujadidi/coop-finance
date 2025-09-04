@@ -5,12 +5,12 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { SavingTableAction } from "@/components/table/saving-table-action";
+import { Badge } from "@/components/ui/badge";
 import { Prisma } from "@/generated/prisma";
-import { Switch } from "@/components/ui/switch";
-import { formatRupiah } from "@/lib/utils";
+import { formatRupiah, getStatusColor } from "@/lib/utils";
+import { LoanTableAction } from "@/components/table/loan-table-action";
 
-export type SavingDashboard = Prisma.SavingsAccountGetPayload<{
+export type LoanDashboard = Prisma.LoanGetPayload<{
   include: {
     member: {
       include: {
@@ -21,15 +21,15 @@ export type SavingDashboard = Prisma.SavingsAccountGetPayload<{
         };
       };
     };
-    SavingType: {
+    _count: {
       select: {
-        name: true;
+        transactions: true;
       };
     };
   };
 }>;
 
-export const columns: ColumnDef<SavingDashboard>[] = [
+export const columns: ColumnDef<LoanDashboard>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -52,165 +52,202 @@ export const columns: ColumnDef<SavingDashboard>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-
   {
-    accessorKey: "accountNo",
+    accessorKey: "loanNo",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          No Simpanan
+          Nomor Pinjaman
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="font-semibold">{row.getValue("accountNo")}</div>
+      <div className="font-semibold">{row.getValue("loanNo")}</div>
     ),
   },
   {
-    id: "SavingType.name",
-    accessorFn: (row) => row.SavingType?.name,
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Jenis Simpanan
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-  },
-  {
-    id: "member.memberType.name",
-    accessorFn: (row) => row.member.memberType.name,
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Jenis Anggota
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-  },
-  {
-    id: "member.memberNo",
-    accessorFn: (row) => row.member.memberNo,
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          No Anggota
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-  },
-  {
     id: "member.name",
-    accessorFn: (row) => row.member.name,
+    accessorKey: "member.name",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Nama
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-  },
-  {
-    id: "member.phone",
-    accessorFn: (row) => row.member.phone,
-    header: "Telp",
-  },
-
-  {
-    accessorKey: "createdAt",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Tanggal Dibuat
+          Anggota
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const date = row.getValue("createdAt") as Date;
-      return new Date(date).toLocaleDateString("id-ID");
+      const member = row.original.member;
+      return (
+        <div>
+          <div className="font-medium">{member.name}</div>
+          <div className="text-sm text-muted-foreground">
+            {member.memberNo} • {member.memberType.name}
+          </div>
+        </div>
+      );
     },
   },
   {
-    accessorKey: "balance",
+    accessorKey: "principalAmount",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Saldo
+          Jumlah Pinjaman
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const amount = row.getValue("balance") as number;
+      const amount = row.getValue("principalAmount") as number;
       const formatted = formatRupiah(amount);
-
       return <div className="text-left font-medium">{formatted}</div>;
     },
   },
   {
-    accessorKey: "isActive",
+    accessorKey: "interestRate",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Aktif
+          Suku Bunga
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => (
-      <Switch
-        checked={row.original.isActive}
-        // onCheckedChange={async () => {
-        //   const result = await memberActiveToggle({
-        //     id: row.original.id,
-        //     isActive: row.original.isActive,
-        //   });
-        //   if (result.error) {
-        //     toast.error(result.message);
-        //   } else {
-        //     toast.success(result.message);
-        //   }
-        // }}
-      />
-    ),
+    cell: ({ row }) => {
+      const rate = row.getValue("interestRate") as number;
+      return <div className="text-center">{rate}% / tahun</div>;
+    },
+  },
+  {
+    accessorKey: "loanTerm",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Jangka Waktu
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const term = row.getValue("loanTerm") as number;
+      return <div className="text-center">{term} bulan</div>;
+    },
+  },
+  {
+    accessorKey: "monthlyPayment",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Angsuran Bulanan
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const amount = row.getValue("monthlyPayment") as number;
+      const formatted = formatRupiah(amount);
+      return <div className="text-left font-medium">{formatted}</div>;
+    },
+  },
+  {
+    accessorKey: "outstandingBalance",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Sisa Pinjaman
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const amount = row.getValue("outstandingBalance") as number;
+      const formatted = formatRupiah(amount);
+      return <div className="text-left font-medium">{formatted}</div>;
+    },
+  },
+  {
+    accessorKey: "status",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Status
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const status = row.getValue("status") as string;
+
+      const { label, variant } = getStatusColor(status);
+      return <Badge variant={variant}>{label}</Badge>;
+    },
+  },
+  {
+    accessorKey: "applicationDate",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Tanggal Pengajuan
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const date = row.getValue("applicationDate") as string;
+      return new Date(date).toLocaleDateString("id-ID");
+    },
+  },
+  {
+    accessorKey: "_count",
+    header: "Transaksi",
+    cell: ({ row }) => {
+      const count = row.getValue("_count") as { transactions: number };
+      return (
+        <div className="text-center">
+          <Badge variant="outline">{count.transactions}</Badge>
+        </div>
+      );
+    },
   },
   {
     id: "actions",
-    header: () => <div className="font-semibold w-full text-left">Aksi</div>,
+    enableHiding: false,
     cell: ({ row }) => {
-      const saving = row.original;
-
-      return <SavingTableAction saving={saving} />;
+      const loan = row.original;
+      return (
+        <div className="text-right">
+          <LoanTableAction loan={loan} />
+        </div>
+      );
     },
   },
 ];

@@ -56,7 +56,7 @@ export const SavingTypeColumns: ColumnDef<SavingTypeWithCount>[] = [
         </div>
       );
     },
-    cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
+    cell: ({ row }) => <span className="font-semibold">{row.original.name}</span>,
   },
   {
     accessorKey: "_count.savings",
