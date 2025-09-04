@@ -4,7 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
-import { savingType } from "@/lib/zod-schema";
+import { savingsAccountSchema, savingType } from "@/lib/zod-schema";
 import { requireAuth } from "@/lib/auth-server";
 
 const revalidateSaving = () => {
@@ -12,6 +12,101 @@ const revalidateSaving = () => {
   revalidatePath("/");
   revalidatePath("/pengaturan");
 };
+
+export const createSaving = async (
+  data: z.infer<typeof savingsAccountSchema>
+) => {
+  try {
+    await requireAuth();
+    const validatedData = savingsAccountSchema.parse(data);
+    const result = await prisma.savingsAccount.create({
+      data: validatedData,
+    });
+    revalidateSaving();
+    return { success: true, message: "Simpanan baru berhasil dibuat", result };
+  } catch (error) {
+    return { success: false, message: "Gagal membuat simpanan baru", error };
+  }
+};
+
+export const updateSaving = async (
+  id: string,
+  data: z.infer<typeof savingsAccountSchema>
+) => {
+  try {
+    await requireAuth();
+    const validatedData = savingsAccountSchema.parse(data);
+    const result = await prisma.savingsAccount.update({
+      where: {
+        id,
+      },
+      data: validatedData,
+    });
+    revalidateSaving();
+    return {
+      success: true,
+      message: "Simpanan berhasil diupdate",
+      result,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Gagal mengupdate simpanan",
+      error,
+    };
+  }
+};
+
+export const getSavings = async () => {
+  try {
+    await requireAuth();
+    const result = await prisma.savingsAccount.findMany({
+      include: {
+        member: {
+          select: {
+            name: true,
+          },
+        },
+        SavingType: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    return { success: true, message: "Data simpanan berhasil dimuat", result };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Gagal mengambil data simpanan",
+      error,
+      result: [],
+    };
+  }
+};
+
+export const deleteSavings = async (id: string) => {
+  try {
+    await requireAuth();
+    const result = await prisma.savingsAccount.deleteMany({
+      where: {
+        id,
+      },
+    });
+    revalidateSaving();
+    return {
+      success: true,
+      message: "Berhasil menghapus simpanan!",
+      result,
+    };
+  } catch (error) {
+    return { success: false, message: "Gagal menghapus simpanan", error };
+  }
+};
+
 // saving type
 
 export const createSavingType = async (data: z.infer<typeof savingType>) => {
