@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import {
   Form,
@@ -43,21 +43,42 @@ export const TransactionForm = ({
   const form = useForm<z.infer<typeof transactionSchema>>({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
-      transactionNo: transaction?.transactionNo || "",
-      type: transaction?.type || undefined,
-      amount: transaction?.amount || 0,
-      description: transaction?.description || "",
-      memberId: transaction?.memberId || "",
-      savingsAccountId: transaction?.savingsAccountId || undefined,
-      loanId: transaction?.loanId || undefined,
+      transactionNo: transaction?.transactionNo ?? "",
+      type: transaction?.type ?? undefined,
+      amount: transaction?.amount ?? 0,
+      description: transaction?.description ?? "",
+      memberId: transaction?.memberId ?? "",
+      savingsAccountId: transaction?.savingsAccountId ?? undefined,
+      loanId: transaction?.loanId ?? undefined,
     },
   });
 
   const [displayAmount, setDisplayAmount] = useState(
     transaction?.amount ? formatRupiah(transaction.amount) : ""
   );
+  const [filteredSavings, setFilteredSavings] = useState<SavingsAccount[]>([]);
+  const [filteredLoans, setFilteredLoans] = useState<Loan[]>([]);
 
   const transactionType = form.watch("type");
+  const watchedMemberId = form.watch("memberId");
+
+  useEffect(() => {
+    if (watchedMemberId) {
+      const memberSavings = savings.filter(
+        (s) => s.memberId === watchedMemberId
+      );
+      setFilteredSavings(memberSavings);
+
+      const memberLoans = loans.filter((l) => l.memberId === watchedMemberId);
+      setFilteredLoans(memberLoans);
+
+      form.resetField("savingsAccountId");
+      form.resetField("loanId");
+    } else {
+      setFilteredSavings([]);
+      setFilteredLoans([]);
+    }
+  }, [watchedMemberId, savings, loans, form]);
 
   return (
     <Form {...form}>
@@ -187,13 +208,20 @@ export const TransactionForm = ({
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      value={field.value || ""}
+                      disabled={!watchedMemberId}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Pilih rekening simpanan" />
+                        <SelectValue
+                          placeholder={
+                            !watchedMemberId
+                              ? "Pilih anggota dulu"
+                              : "Pilih rekening simpanan"
+                          }
+                        />
                       </SelectTrigger>
                       <SelectContent>
-                        {savings.map((saving) => (
+                        {filteredSavings.map((saving) => (
                           <SelectItem key={saving.id} value={saving.id}>
                             {saving.accountNo}
                           </SelectItem>
@@ -220,13 +248,20 @@ export const TransactionForm = ({
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      value={field.value || ""}
+                      disabled={!watchedMemberId}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Pilih pinjaman" />
+                        <SelectValue
+                          placeholder={
+                            !watchedMemberId
+                              ? "Pilih anggota dulu"
+                              : "Pilih pinjaman"
+                          }
+                        />
                       </SelectTrigger>
                       <SelectContent>
-                        {loans.map((loan) => (
+                        {filteredLoans.map((loan) => (
                           <SelectItem key={loan.id} value={loan.id}>
                             {loan.loanNo}
                           </SelectItem>

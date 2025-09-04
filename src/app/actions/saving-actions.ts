@@ -100,15 +100,33 @@ export const getSavingsForDashboard = async () => {
   }
 };
 
-export const getSavings = async () => {
+export const getSavings = async (query?: { memberId: string }) => {
   try {
     await requireAuth();
-    const result = await prisma.savingsAccount.findMany();
-    return { success: true, message: "Data simpanan berhasil dimuat", result: JSON.parse(JSON.stringify(result)) };
+    const result = await prisma.savingsAccount.findMany({
+      where: query,
+      include: {
+        member: {
+          select: {
+            name: true,
+          },
+        },
+        SavingType: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+    return {
+      success: true,
+      message: "Data simpanan berhasil dimuat",
+      result: JSON.parse(JSON.stringify(result)),
+    };
   } catch (error) {
     return {
       success: false,
-      message: "Gagal mengambil data simpanan",
+      message: "Gagal mengambil simpanan",
       error,
       result: [],
     };

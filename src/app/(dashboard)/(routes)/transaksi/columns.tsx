@@ -8,11 +8,23 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Prisma } from "@/generated/prisma";
 
+import { TransactionTableAction } from "@/components/table/transaction-table-action";
+
 export type TransactionDashboard = Prisma.TransactionGetPayload<{
   include: {
     Member: {
       select: {
         name: true;
+      };
+    };
+    savingsAccount: {
+      select: {
+        accountNo: true;
+        SavingType: {
+          select: {
+            name: true;
+          };
+        };
       };
     };
   };
@@ -70,6 +82,28 @@ export const columns: ColumnDef<TransactionDashboard>[] = [
     ),
     cell: ({ row }) =>
       row.original.Member?.name || (
+        <span className="text-muted-foreground">-</span>
+      ),
+  },
+  // savings account number
+  {
+    accessorKey: "savingsAccount.accountNo",
+    header: () => (
+      <div className="font-semibold w-full text-left">No. Rekening</div>
+    ),
+    cell: ({ row }) =>
+      row.original.savingsAccount?.accountNo || (
+        <span className="text-muted-foreground">-</span>
+      ),
+  },
+  // saving type name
+  {
+    id: "savingType",
+    header: () => (
+      <div className="font-semibold w-full text-left">Jenis Rekening</div>
+    ),
+    cell: ({ row }) =>
+      row.original.savingsAccount?.SavingType?.name || (
         <span className="text-muted-foreground">-</span>
       ),
   },
@@ -138,5 +172,9 @@ export const columns: ColumnDef<TransactionDashboard>[] = [
       );
     },
   },
-  // TODO: table action
+  // actions
+  {
+    id: "actions",
+    cell: ({ row }) => <TransactionTableAction transaction={row.original} />,
+  },
 ];

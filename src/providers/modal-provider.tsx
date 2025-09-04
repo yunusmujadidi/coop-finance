@@ -16,7 +16,12 @@ export const ModalProvider = async () => {
       <MemberTypeModal />
       <SavingTypeModal />
       <LoanModal member={members.result} />
-      <TransactionModal members={members.result} loans={loans.result} savings={savings.result} />
+      <TransactionModal
+        members={members.result}
+        loans={loans.result}
+        savings={savings.result}
+      />
     </>
   );
 };
+
