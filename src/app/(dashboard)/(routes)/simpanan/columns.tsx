@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { SavingTableAction } from "@/components/table/saving-table-action";
 import { Prisma } from "@/generated/prisma";
-import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 
 export type SavingDashboard = Prisma.SavingsAccountGetPayload<{

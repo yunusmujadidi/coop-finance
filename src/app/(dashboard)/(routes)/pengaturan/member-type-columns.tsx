@@ -5,12 +5,18 @@ import { id } from "date-fns/locale";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 
-import { MemberType } from "@/generated/prisma";
+import { MemberType as PrismaMemberType } from "@/generated/prisma";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { MemberTypeTableAction } from "@/components/table/member-type-table-action";
 
-export const MemberTypeColumns: ColumnDef<MemberType>[] = [
+export type MemberTypeWithCount = PrismaMemberType & {
+  _count: {
+    members: number;
+  };
+};
+
+export const MemberTypeColumns: ColumnDef<MemberTypeWithCount>[] = [
   // checkbox
   {
     id: "select",
@@ -52,6 +58,15 @@ export const MemberTypeColumns: ColumnDef<MemberType>[] = [
     },
     cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
   },
+  {
+    accessorKey: "_count.members",
+    header: () => <div className="text-center">Jumlah Anggota</div>,
+    cell: ({ row }) => (
+      <span className="flex items-center justify-center">
+        <p className="text-center">{row.original._count.members}</p>
+      </span>
+    ),
+  },
   // created date
   {
     accessorKey: "createdAt",
@@ -70,31 +85,6 @@ export const MemberTypeColumns: ColumnDef<MemberType>[] = [
     },
     cell: ({ row }) => {
       const date = row.getValue("createdAt") as Date;
-      return new Date(date).toLocaleDateString("id-ID", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
-    },
-  },
-  // updated date
-  {
-    accessorKey: "updatedAt",
-    header: ({ column }) => {
-      return (
-        <div className="flex items-center justify-start">
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            <span className="font-semibold">Terakhir Diubah</span>
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
-      );
-    },
-    cell: ({ row }) => {
-      const date = row.getValue("updatedAt") as Date;
       return format(new Date(date), "d MMMM yyyy", { locale: id });
     },
   },

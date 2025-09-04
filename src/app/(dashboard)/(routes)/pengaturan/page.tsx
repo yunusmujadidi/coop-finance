@@ -19,11 +19,14 @@ import { SavingTypeButton } from "@/components/buttons/saving-type-button";
 import { MemberTypeButton } from "@/components/buttons/member-type-button";
 
 const SettingPage = async () => {
-  const members = await getMemberType();
-  const savings = await getSavingType();
+  const [members, savings] = await Promise.all([
+    getMemberType(),
+    getSavingType(),
+  ]);
 
   return (
     <div className="m-4">
+      {/* tabs component */}
       <Tabs defaultValue="member-types">
         <TabsList className="w-[400px] grid grid-cols-2">
           <TabsTrigger value="member-types" className="flex items-center gap-2">
