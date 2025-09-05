@@ -10,7 +10,7 @@ export const DashboardCard = ({ title, content, icon }: DashboardCardProps) => {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="font-light">{title}</CardTitle>
+        <CardTitle className="font-light text-xs">{title}</CardTitle>
         {icon}
       </CardHeader>
       <CardContent>

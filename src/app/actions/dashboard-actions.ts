@@ -63,7 +63,11 @@ export const getTotalLoans = async () => {
 export const getTotalTransactions = async () => {
   try {
     const result = await prisma.transaction.count();
-    return { success: true, message: "Total transaksi berhasil dimuat", result };
+    return {
+      success: true,
+      message: "Total transaksi berhasil dimuat",
+      result,
+    };
   } catch (error) {
     return {
       success: false,
