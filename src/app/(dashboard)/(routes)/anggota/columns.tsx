@@ -6,7 +6,6 @@ import { format } from "date-fns";
 import { id } from "date-fns/locale";
 
 import { MemberTableAction } from "@/components/table/member-table-action";
-import { Badge } from "@/components/ui/badge";
 import { Prisma } from "@/generated/prisma";
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -160,8 +159,6 @@ export const columns: ColumnDef<MemberDashboard>[] = [
             }
           }}
         />
-
-        
       </div>
     ),
   },
