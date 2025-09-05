@@ -5,15 +5,17 @@ import {
   getTotalTransactions,
 } from "@/app/actions/dashboard-actions";
 import { DashboardCard } from "@/components/main/dashboard-card";
-import { Card, CardContent } from "@/components/ui/card";
 import { formatRupiah } from "@/lib/utils";
-import { Landmark, Repeat, Users, Wallet } from "lucide-react";
+import { Landmark, Loader2, Repeat, Users, Wallet } from "lucide-react";
+import { Suspense } from "react";
 
-const DashboardPage = async () => {
-  const anggota = await getTotalMembers();
-  const simpanan = await getTotalSavings();
-  const pinjaman = await getTotalLoans();
-  const transaksi = await getTotalTransactions();
+const DashboardAsyncPage = async () => {
+  const [anggota, simpanan, pinjaman, transaksi] = await Promise.all([
+    getTotalMembers(),
+    getTotalSavings(),
+    getTotalLoans(),
+    getTotalTransactions(),
+  ]);
   return (
     <div className="m-4">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -39,6 +41,20 @@ const DashboardPage = async () => {
         />
       </div>
     </div>
+  );
+};
+
+const DashboardPage = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center h-3/4">
+          <Loader2 className="animate-spin size-12 text-primary" />
+        </div>
+      }
+    >
+      <DashboardAsyncPage />
+    </Suspense>
   );
 };
 

@@ -10,7 +10,7 @@ export const SavingTypeButton = () => {
   return (
     <Button onClick={() => onOpen()}>
       <PlusCircle />
-      Tambah Jenis Anggota
+      Tambah Jenis Simpanan
     </Button>
   );
 };

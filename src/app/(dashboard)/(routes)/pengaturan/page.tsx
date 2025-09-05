@@ -1,4 +1,4 @@
-import { Users, Wallet } from "lucide-react";
+import { Loader2, Users, Wallet } from "lucide-react";
 
 import {
   Card,
@@ -17,8 +17,9 @@ import { MemberTypeColumns } from "@/app/(dashboard)/(routes)/pengaturan/member-
 import { SavingTypeColumns } from "@/app/(dashboard)/(routes)/pengaturan/saving-type-columns";
 import { SavingTypeButton } from "@/components/buttons/saving-type-button";
 import { MemberTypeButton } from "@/components/buttons/member-type-button";
+import { Suspense } from "react";
 
-const SettingPage = async () => {
+const SettingPageAsync = async () => {
   const [members, savings] = await Promise.all([
     getMemberType(),
     getSavingType(),
@@ -74,6 +75,20 @@ const SettingPage = async () => {
         </TabsContent>
       </Tabs>
     </div>
+  );
+};
+
+const SettingPage = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center h-3/4">
+          <Loader2 className="animate-spin size-12 text-primary" />
+        </div>
+      }
+    >
+      <SettingPageAsync />
+    </Suspense>
   );
 };
 
