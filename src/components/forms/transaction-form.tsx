@@ -23,9 +23,10 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { transactionSchema } from "@/lib/zod-schema";
-import { Member, Transaction, Loan, SavingsAccount } from "@/generated/prisma";
+import { Member, Loan, SavingsAccount } from "@/generated/prisma";
 import { TransactionType } from "@/generated/prisma";
 import { formatRupiah, parseRupiah } from "@/lib/utils";
+import { TransactionDashboard } from "@/app/(dashboard)/(routes)/transaksi/columns";
 
 export const TransactionForm = ({
   onSubmit,
@@ -35,7 +36,7 @@ export const TransactionForm = ({
   savings = [],
 }: {
   onSubmit: (data: z.infer<typeof transactionSchema>) => void;
-  transaction?: Transaction;
+  transaction?: TransactionDashboard;
   members?: Member[];
   loans?: Loan[];
   savings?: SavingsAccount[];
@@ -72,13 +73,15 @@ export const TransactionForm = ({
       const memberLoans = loans.filter((l) => l.memberId === watchedMemberId);
       setFilteredLoans(memberLoans);
 
-      form.resetField("savingsAccountId");
-      form.resetField("loanId");
+      if (!transaction) {
+        form.resetField("savingsAccountId");
+        form.resetField("loanId");
+      }
     } else {
       setFilteredSavings([]);
       setFilteredLoans([]);
     }
-  }, [watchedMemberId, savings, loans, form]);
+  }, [watchedMemberId, savings, loans, form, transaction]);
 
   return (
     <Form {...form}>

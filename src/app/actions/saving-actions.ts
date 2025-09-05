@@ -152,6 +152,30 @@ export const deleteSavings = async (id: string) => {
   }
 };
 
+export const savingActiveToggle = async ({
+  id,
+  isActive,
+}: {
+  id: string;
+  isActive: boolean;
+}) => {
+  try {
+    await requireAuth();
+    await prisma.savingsAccount.updateMany({
+      where: { id },
+      data: { isActive: !isActive },
+    });
+    revalidateSaving();
+    return { success: true, message: "Berhasil meng-update status simpanan!" };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Gagal mengupdate status simpanan",
+      error,
+    };
+  }
+};
+
 // saving type
 
 export const createSavingType = async (data: z.infer<typeof savingType>) => {

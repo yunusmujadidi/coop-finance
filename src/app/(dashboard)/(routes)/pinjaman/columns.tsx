@@ -2,13 +2,24 @@
 
 import { ArrowUpDown } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
+import { id } from "date-fns/locale";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Prisma } from "@/generated/prisma";
+import { Prisma, LoanStatus } from "@/generated/prisma";
 import { formatRupiah, getStatusColor } from "@/lib/utils";
 import { LoanTableAction } from "@/components/table/loan-table-action";
+import { updateLoanStatus } from "@/app/actions/loan-action";
 
 export type LoanDashboard = Prisma.LoanGetPayload<{
   include: {
@@ -205,10 +216,43 @@ export const columns: ColumnDef<LoanDashboard>[] = [
       );
     },
     cell: ({ row }) => {
-      const status = row.getValue("status") as string;
-
+      const { id, status } = row.original;
       const { label, variant } = getStatusColor(status);
-      return <Badge variant={variant}>{label}</Badge>;
+
+      return (
+        <Select
+          value={status}
+          onValueChange={async (newStatus) => {
+            const result = await updateLoanStatus({
+              id,
+              status: newStatus as LoanStatus,
+            });
+            if (result.error) {
+              toast.error(result.message);
+            } else {
+              toast.success(result.message);
+            }
+          }}
+        >
+          <SelectTrigger>
+            <SelectValue asChild>
+              <Badge variant={variant}>{label}</Badge>
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            {Object.values(LoanStatus).map((status) => {
+              const { label, variant } = getStatusColor(status);
+              return (
+                <SelectItem key={status} value={status}>
+                  <Badge variant={variant} className="w-full">
+                    {label}
+                  </Badge>
+                </SelectItem>
+              );
+            })}
+          </SelectContent>
+        </Select>
+      );
     },
   },
   {
@@ -226,21 +270,21 @@ export const columns: ColumnDef<LoanDashboard>[] = [
     },
     cell: ({ row }) => {
       const date = row.getValue("applicationDate") as string;
-      return new Date(date).toLocaleDateString("id-ID");
+      return format(new Date(date), "d MMMM yyyy", { locale: id });
     },
   },
-  {
-    accessorKey: "_count",
-    header: "Transaksi",
-    cell: ({ row }) => {
-      const count = row.getValue("_count") as { transactions: number };
-      return (
-        <div className="text-center">
-          <Badge variant="outline">{count.transactions}</Badge>
-        </div>
-      );
-    },
-  },
+  // {
+  //   accessorKey: "_count",
+  //   header: "Transaksi",
+  //   cell: ({ row }) => {
+  //     const count = row.getValue("_count") as { transactions: number };
+  //     return (
+  //       <div className="text-center">
+  //         <Badge variant="outline">{count.transactions}</Badge>
+  //       </div>
+  //     );
+  //   },
+  // },
   {
     id: "actions",
     enableHiding: false,
@@ -254,5 +298,3 @@ export const columns: ColumnDef<LoanDashboard>[] = [
     },
   },
 ];
-
-

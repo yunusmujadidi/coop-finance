@@ -2,6 +2,8 @@
 
 import { ArrowUpDown } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
+import { id } from "date-fns/locale";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -152,7 +154,7 @@ export const columns: ColumnDef<TransactionDashboard>[] = [
     },
     cell: ({ row }) => {
       const date = row.getValue("transactionDate") as Date;
-      return new Date(date).toLocaleDateString("id-ID");
+      return format(new Date(date), "d MMMM yyyy", { locale: id });
     },
   },
   // description

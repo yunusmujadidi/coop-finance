@@ -16,7 +16,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { TransactionForm } from "@/components/forms/transaction-form";
 import { transactionSchema } from "@/lib/zod-schema";
-import { createTransaction } from "@/app/actions/transaction-actions";
+import {
+  createTransaction,
+  updateTransaction,
+} from "@/app/actions/transaction-actions";
 import { Member, Loan, SavingsAccount } from "@/generated/prisma";
 import { useTransactionModal } from "@/hooks/use-modal";
 
@@ -30,11 +33,14 @@ export const TransactionModal = ({
   savings: SavingsAccount[];
 }) => {
   const [isPending, startTransition] = useTransition();
-  const { onClose, isOpen } = useTransactionModal();
+  const { onClose, isOpen, isEdit, transaction } = useTransactionModal();
 
   const onSubmit = (data: z.infer<typeof transactionSchema>) => {
     startTransition(async () => {
-      const result = await createTransaction(data);
+      const action = isEdit
+        ? updateTransaction(transaction!.id, data)
+        : createTransaction(data);
+      const result = await action;
       if (result.success) {
         toast.success(result.message);
         onClose();
@@ -48,9 +54,13 @@ export const TransactionModal = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-7xl">
         <DialogHeader>
-          <DialogTitle>Tambahkan Transaksi Baru</DialogTitle>
+          <DialogTitle>
+            {isEdit ? "Edit Transaksi" : "Tambahkan Transaksi Baru"}
+          </DialogTitle>
           <DialogDescription>
-            Isi form berikut untuk menambahkan transaksi baru
+            {isEdit
+              ? "Isi form berikut untuk mengedit transaksi"
+              : "Isi form berikut untuk menambahkan transaksi baru"}
           </DialogDescription>
         </DialogHeader>
         {/* form transaksi */}
@@ -59,6 +69,7 @@ export const TransactionModal = ({
           members={members}
           loans={loans}
           savings={savings}
+          transaction={transaction}
         />
         <DialogFooter>
           <Button disabled={isPending} variant="outline" onClick={onClose}>
@@ -68,8 +79,10 @@ export const TransactionModal = ({
             {isPending ? (
               <>
                 <Loader2 className="animate-spin" />
-                Sedang Membuat
+                {isEdit ? "Sedang Mengupdate" : "Sedang Membuat"}
               </>
+            ) : isEdit ? (
+              "Update"
             ) : (
               "Tambah"
             )}

@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { loanSchema } from "@/lib/zod-schema";
 import { requireAuth } from "@/lib/auth-server";
+import { LoanStatus } from "@/generated/prisma";
 
 const revalidateLoan = () => {
   revalidatePath("/pinjaman");
@@ -65,6 +66,26 @@ export const updateLoan = async (
     };
   } catch (error) {
     return { success: false, message: "Gagal mengupdate pinjaman", error };
+  }
+};
+
+export const updateLoanStatus = async ({
+  id,
+  status,
+}: {
+  id: string;
+  status: LoanStatus;
+}) => {
+  try {
+    await requireAuth();
+    await prisma.loan.update({
+      where: { id },
+      data: { status },
+    });
+    revalidateLoan();
+    return { success: true, message: "Status pinjaman berhasil diupdate" };
+  } catch (error) {
+    return { success: false, message: "Gagal mengupdate status pinjaman", error };
   }
 };
 

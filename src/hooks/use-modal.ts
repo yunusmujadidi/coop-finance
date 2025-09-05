@@ -1,6 +1,7 @@
+import { TransactionDashboard } from "@/app/(dashboard)/(routes)/transaksi/columns";
 import { create } from "zustand";
 
-import { Loan, MemberType, SavingType, Transaction } from "@/generated/prisma";
+import { Loan, MemberType, SavingType } from "@/generated/prisma";
 
 type MemberTypeModalProps = {
   onOpen: () => void;
@@ -61,10 +62,10 @@ export const useLoanModal = create<LoanModalState>((set) => ({
 type TransactionModalState = {
   onOpen: () => void;
   onClose: () => void;
-  onOpenEdit: (transaction: Transaction) => void;
+  onOpenEdit: (transaction: TransactionDashboard) => void;
   isOpen: boolean;
   isEdit: boolean;
-  transaction?: Transaction;
+  transaction?: TransactionDashboard;
 };
 
 export const useTransactionModal = create<TransactionModalState>((set) => ({
@@ -72,7 +73,7 @@ export const useTransactionModal = create<TransactionModalState>((set) => ({
   isOpen: false,
   transaction: undefined,
   onOpen: () => set({ isOpen: true, isEdit: false, transaction: undefined }),
-  onOpenEdit: (transaction: Transaction) =>
+  onOpenEdit: (transaction: TransactionDashboard) =>
     set({ isOpen: true, isEdit: true, transaction }),
   onClose: () => set({ isOpen: false, isEdit: false, transaction: undefined }),
 }));

@@ -2,6 +2,8 @@
 
 import { toast } from "sonner";
 import { ArrowUpDown } from "lucide-react";
+import { format } from "date-fns";
+import { id } from "date-fns/locale";
 
 import { MemberTableAction } from "@/components/table/member-table-action";
 import { Badge } from "@/components/ui/badge";
@@ -135,7 +137,7 @@ export const columns: ColumnDef<MemberDashboard>[] = [
     },
     cell: ({ row }) => {
       const date = row.getValue("registerDate") as Date;
-      return new Date(date).toLocaleDateString("id-ID");
+      return format(new Date(date), "d MMMM yyyy", { locale: id });
     },
   },
   // member status
@@ -159,12 +161,7 @@ export const columns: ColumnDef<MemberDashboard>[] = [
           }}
         />
 
-        <Badge
-          variant={row.original.isActive ? "default" : "secondary"}
-          className="w-[50px] justify-center"
-        >
-          {row.original.isActive ? "Ya" : "Tidak"}
-        </Badge>
+        
       </div>
     ),
   },

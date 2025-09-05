@@ -1,26 +1,22 @@
-import { getMembers } from "@/app/actions/member-actions";
-import { getLoans } from "@/app/actions/loan-action";
-import { getSavings } from "@/app/actions/saving-actions";
 import { LoanModal } from "@/components/modals/loan-modal";
 import { MemberTypeModal } from "@/components/modals/member-type-modal";
 import { SavingTypeModal } from "@/components/modals/saving-type-modal";
 import { TransactionModal } from "@/components/modals/transaction-modal";
+import { Loan, Member, SavingsAccount } from "@/generated/prisma";
 
-export const ModalProvider = async () => {
-  const members = await getMembers();
-  const loans = await getLoans();
-  const savings = await getSavings();
+interface ModalProviderProps {
+  members: Member[];
+  loans: Loan[];
+  savings: SavingsAccount[];
+}
 
+export const ModalProvider = ({ members, loans, savings }: ModalProviderProps) => {
   return (
     <>
       <MemberTypeModal />
       <SavingTypeModal />
-      <LoanModal member={members.result} />
-      <TransactionModal
-        members={members.result}
-        loans={loans.result}
-        savings={savings.result}
-      />
+      <LoanModal member={members} />
+      <TransactionModal members={members} loans={loans} savings={savings} />
     </>
   );
 };

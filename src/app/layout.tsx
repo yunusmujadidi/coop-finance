@@ -6,6 +6,9 @@ import { ThemeProvider } from "@/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { SheetProvider } from "@/providers/sheet-provider";
 import { ModalProvider } from "@/providers/modal-provider";
+import { getMembers, getMemberType } from "@/app/actions/member-actions";
+import { getSavingType, getSavings } from "@/app/actions/saving-actions";
+import { getLoans } from "@/app/actions/loan-action";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,11 +25,19 @@ export const metadata: Metadata = {
   description: "Cooperative Finance App",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [members, memberTypes, savingTypes, loans, savings] = await Promise.all([
+    getMembers(),
+    getMemberType(),
+    getSavingType(),
+    getLoans(),
+    getSavings(),
+  ]);
+
   return (
     <html suppressHydrationWarning lang="en">
       <body
@@ -41,8 +52,16 @@ export default function RootLayout({
         >
           <main>{children}</main>
           <Toaster />
-          <SheetProvider />
-          <ModalProvider />
+          <SheetProvider
+            memberTypes={memberTypes.result}
+            savingTypes={savingTypes.result}
+            members={members.result}
+          />
+          <ModalProvider
+            members={members.result}
+            loans={loans.result}
+            savings={savings.result}
+          />
         </ThemeProvider>
       </body>
     </html>

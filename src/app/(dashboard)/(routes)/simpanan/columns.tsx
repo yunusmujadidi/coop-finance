@@ -1,7 +1,10 @@
 "use client";
 
+import { toast } from "sonner";
 import { ArrowUpDown } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
+import { id } from "date-fns/locale";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -9,6 +12,7 @@ import { SavingTableAction } from "@/components/table/saving-table-action";
 import { Prisma } from "@/generated/prisma";
 import { Switch } from "@/components/ui/switch";
 import { formatRupiah } from "@/lib/utils";
+import { savingActiveToggle } from "@/app/actions/saving-actions";
 
 export type SavingDashboard = Prisma.SavingsAccountGetPayload<{
   include: {
@@ -151,7 +155,7 @@ export const columns: ColumnDef<SavingDashboard>[] = [
     },
     cell: ({ row }) => {
       const date = row.getValue("createdAt") as Date;
-      return new Date(date).toLocaleDateString("id-ID");
+      return format(new Date(date), "d MMMM yyyy", { locale: id });
     },
   },
   {
@@ -190,17 +194,17 @@ export const columns: ColumnDef<SavingDashboard>[] = [
     cell: ({ row }) => (
       <Switch
         checked={row.original.isActive}
-        // onCheckedChange={async () => {
-        //   const result = await memberActiveToggle({
-        //     id: row.original.id,
-        //     isActive: row.original.isActive,
-        //   });
-        //   if (result.error) {
-        //     toast.error(result.message);
-        //   } else {
-        //     toast.success(result.message);
-        //   }
-        // }}
+        onCheckedChange={async () => {
+          const result = await savingActiveToggle({
+            id: row.original.id,
+            isActive: row.original.isActive,
+          });
+          if (result.error) {
+            toast.error(result.message);
+          } else {
+            toast.success(result.message);
+          }
+        }}
       />
     ),
   },

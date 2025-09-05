@@ -1,7 +1,6 @@
 import { useTransition } from "react";
-import Link from "next/link";
-import { ArrowRightLeft, Edit, MoreHorizontal, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { Edit, MoreHorizontal, Trash2 } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -58,13 +57,6 @@ export const SavingTableAction = ({ saving }: { saving: SavingDashboard }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Aksi</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {/* transaction button */}
-          <DropdownMenuItem disabled={isPending} asChild>
-            <Link href={`/simpanan/${saving.id}/transaksi`}>
-              <ArrowRightLeft className="mr-2 size-4" />
-              Transaksi
-            </Link>
-          </DropdownMenuItem>
           {/* edit button */}
           <DropdownMenuItem
             disabled={isPending}

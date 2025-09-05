@@ -1,17 +1,19 @@
-import { getMembers, getMemberType } from "@/app/actions/member-actions";
-import { getSavingType } from "@/app/actions/saving-actions";
 import { MemberSheet } from "@/components/sheets/member-sheet";
 import { SavingSheet } from "@/components/sheets/saving-sheet";
+import { Member, MemberType, SavingType } from "@/generated/prisma";
 
-export const SheetProvider = async () => {
-  const memberTypes = await getMemberType();
-  const savingTypes = await getSavingType();
-  const members = await getMembers();
+interface SheetProviderProps {
+  memberTypes: MemberType[];
+  savingTypes: SavingType[];
+  members: Member[];
+}
 
+export const SheetProvider = ({ memberTypes, savingTypes, members }: SheetProviderProps) => {
   return (
     <>
-      <MemberSheet memberTypes={memberTypes.result} />
-      <SavingSheet savingTypes={savingTypes.result} members={members.result} />
+      <MemberSheet memberTypes={memberTypes} />
+      <SavingSheet savingTypes={savingTypes} members={members} />
     </>
   );
 };
+
